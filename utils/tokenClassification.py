@@ -3,6 +3,10 @@ model_path="./models/deberta_finetuned_pii"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForTokenClassification.from_pretrained(model_path)
 
+
+## seperate out the the methods for processing comments description and title add file uploader create a class
+
+
 def get_leaks(issues):
 
     gen = pipeline("token-classification",model=model,tokenizer=tokenizer, device=-1)

@@ -6,6 +6,5 @@ from docx import Document
 
 def issueTagger():
     issues=get_issues("KAN")
-    # print(issues)
     print(get_leaks(issues))
     return None
