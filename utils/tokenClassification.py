@@ -16,10 +16,10 @@ class TokenClassifier:
         '''   
         for issue in issues:
             issue_review={}
-            PII_summary=self.get_summary_PII(issue)
-            PII_description=self.get_description_PII(issue)
-            PII_comments=self.get_comments_PII(issue)
-            PII_attachments=self.get_attachment_PII(issue)
+            PII_summary=self.jira_summary_PII(issue)
+            PII_description=self.jira_description_PII(issue)
+            PII_comments=self.jira_comments_PII(issue)
+            PII_attachments=self.jira_attachment_PII(issue)
 
             if PII_summary or PII_comments or PII_description or PII_attachments:
                 issue_review['id']=issue["id"]
@@ -42,11 +42,11 @@ class TokenClassifier:
             
         return tagged_issues
 
-    def get_summary_PII(self,issue):
+    def jira_summary_PII(self,issue):
         summary=issue["fields"]["summary"]
         return self.gen(summary, aggregation_strategy="first")
 
-    def get_description_PII(self,issue):
+    def jira_description_PII(self,issue):
         description=issue["fields"].get('description')
         if description:
                 description=description["content"]
@@ -60,7 +60,7 @@ class TokenClassifier:
             return self.gen(description, aggregation_strategy="first")
         return None
 
-    def get_comments_PII(self,issue):
+    def jira_comments_PII(self,issue):
         comments=issue["fields"]["comment"]["comments"]
         PII_comments=[]
         for comment in comments:
@@ -74,7 +74,7 @@ class TokenClassifier:
                 PII_comments.append({"id":f"{issue['id']}/{comment['id']}",'PII_leak':True,"Leaks":PII_comment})
         return PII_comments
 
-    def get_attachment_PII(self,issue):
+    def jira_attachment_PII(self,issue):
         attachments= issue["fields"].get('attachment_data',[])
         PII_attachments=[]
         for attachment in attachments:
