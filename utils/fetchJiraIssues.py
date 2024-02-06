@@ -32,7 +32,6 @@ def get_issues(project_key:str):
     return issues_data
 #ideally we should fetch these datapoints at once by jql
 
-
 def fetch_issue(id):
     
     url = f"{base_url}/rest/api/3/issue/{id}"
@@ -49,7 +48,17 @@ def fetch_issue(id):
     auth=auth
     )
 
-    return json.loads(res.text)
+    out=json.loads(res.text)
+    attachment_content=[]
+    if "attachment" in out.get('fields',{}):
+        temp=out.get('fields',{}).get('attachment',[])
+        for i in temp:
+            content=handle_file({"filename":i["filename"],"content":fetch_attachments(i['id'])})
+            attachment_content.append({"filename":i["filename"],"content":content})
+    # print('attachment_content',attachment_content)
+    if attachment_content:
+        out['fields']["attachment_data"]=attachment_content
+    return out
 
 #not required
 
@@ -67,7 +76,8 @@ def fetch_attachments(id):
     headers=headers,
     auth=auth
     )
-    out = json.loads(response.text)
+    out = response.content
+
     return out
 
 def fetch_comments(id):
@@ -86,4 +96,18 @@ def fetch_comments(id):
     auth=auth
     )
 
-    print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+    # print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+
+
+from utils.io import FileProcessor
+from utils.constants import FileEntry
+
+def handle_file(file):
+    # print(file)
+    documents=[]
+    document = FileEntry(file["filename"], file["content"])
+    documents.append(document)
+    obj=FileProcessor(documents,0) 
+    out=obj.process_files()
+    out=out.split(sep=',')
+    return out[-2]
