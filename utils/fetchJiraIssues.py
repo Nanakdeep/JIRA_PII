@@ -4,14 +4,16 @@ import json
 import os
 from utils.io import FileProcessor
 from utils.constants import FileEntry
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class JiraFetcher:
     def __init__(self):
         #env fetch
-        self.__token="ATATT3xFfGF02nXCViEDY9VhflTc8llK2nyayBSqPLdHm7n9kF0PRsjO8YspGnyFUYmmQ7wUe2g84Zg7MacduiaFycABqESyT0XhDKxiL465UJl8pFZe_rLNVSCQgJa7HJAmDMbZhvjLOlgWwXA8_BmpWXT-aBH7KN7MgPMkJP7ozycbr7aFMzE=E40165D6"
-        self.__adminId="nanakdeep37@gmail.com"
-        self.__baseURL='https://ndsingh.atlassian.net'
+        self.__token=os.environ['jiraToken']
+        self.__adminId=os.environ['adminId']
+        self.__baseURL=os.environ['baseURL']
         self.__auth = HTTPBasicAuth(self.__adminId, self.__token)
         self.__headers = {
         "Accept": "application/json"
