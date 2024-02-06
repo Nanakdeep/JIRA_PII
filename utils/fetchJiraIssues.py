@@ -5,12 +5,14 @@ import os
 
 # token = os.environ['jiraToken']
 # adminId= os.environ['adminId']
+# baseURL=os.environ['baseURL']
+
 token="ATATT3xFfGF02nXCViEDY9VhflTc8llK2nyayBSqPLdHm7n9kF0PRsjO8YspGnyFUYmmQ7wUe2g84Zg7MacduiaFycABqESyT0XhDKxiL465UJl8pFZe_rLNVSCQgJa7HJAmDMbZhvjLOlgWwXA8_BmpWXT-aBH7KN7MgPMkJP7ozycbr7aFMzE=E40165D6"
 adminId="nanakdeep37@gmail.com"
-base_url='https://ndsingh.atlassian.net'
+baseURL='https://ndsingh.atlassian.net'
 
 def get_issues(project_key:str):
-    url = f"{base_url}/rest/api/2/search?jql=project={project_key}&fields=id&maxResults=100"
+    url = f"{baseURL}/rest/api/2/search?jql=project={project_key}&fields=id&maxResults=100"
 
     auth = HTTPBasicAuth(adminId, token)
 
@@ -34,7 +36,7 @@ def get_issues(project_key:str):
 
 def fetch_issue(id):
     
-    url = f"{base_url}/rest/api/3/issue/{id}"
+    url = f"{baseURL}/rest/api/3/issue/{id}"
     auth = HTTPBasicAuth(adminId,token)
 
     headers = {
@@ -60,10 +62,9 @@ def fetch_issue(id):
         out['fields']["attachment_data"]=attachment_content
     return out
 
-#not required
 
 def fetch_attachments(id):
-    url =f"{base_url}/rest/api/3/attachment/content/{id}"
+    url =f"{baseURL}/rest/api/3/attachment/content/{id}"
     auth = HTTPBasicAuth(adminId,token)
 
     headers = {
@@ -79,24 +80,6 @@ def fetch_attachments(id):
     out = response.content
 
     return out
-
-def fetch_comments(id):
-    url = "https://your-domain.atlassian.net/rest/api/3/issue/{issueIdOrKey}/comment"
-
-    auth = HTTPBasicAuth("email@example.com", "<api_token>")
-
-    headers = {
-    "Accept": "application/json"
-    }
-
-    response = requests.request(
-    "GET",
-    url,
-    headers=headers,
-    auth=auth
-    )
-
-    # print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
 
 from utils.io import FileProcessor
