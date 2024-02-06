@@ -1,10 +1,4 @@
 from transformers import AutoTokenizer, AutoModelForTokenClassification , pipeline
-model_path="./models/deberta_finetuned_pii"
-tokenizer = AutoTokenizer.from_pretrained(model_path)
-model = AutoModelForTokenClassification.from_pretrained(model_path)
-
-
-## seperate out the the methods for processing comments description and title add file uploader create a class
 
 class TokenClassifier:
     def __init__(self):
@@ -15,8 +9,9 @@ class TokenClassifier:
     
     def get_leaks(self,issues):
         tagged_issues=[]
-        ''' look for issue["fields"]["summary"],
-          issue["fields"]["description"]["content"]["content"]["text"] ,
+        ''' looks for
+            issue["fields"]["summary"],
+            issue["fields"]["description"]["content"]["content"]["text"] ,
             issue["fields"]["comment"]["comments"]["body"]["content"]["content"]["text"]
         '''   
         for issue in issues:
