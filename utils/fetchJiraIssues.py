@@ -36,7 +36,7 @@ class JiraFetcher:
         return issues_data
 
     def fetch_issue(self,id):
-        url = f"{self.__baseURL}/rest/api/3/issue/{id}"
+        url = f"{self.__baseURL}/rest/api/3/issue/{id}?fields=summary,description,comment,attachment"
         res = requests.request(
         "GET",
         url,
