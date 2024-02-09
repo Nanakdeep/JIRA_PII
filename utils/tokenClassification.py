@@ -7,7 +7,7 @@ class TokenClassifier:
         self.model = AutoModelForTokenClassification.from_pretrained(self.model_path)
         self.gen=pipeline("token-classification",model=self.model,tokenizer=self.tokenizer, device=-1)
     
-    def get_leaks(self,issues):
+    def get_jira_leaks(self,issues):
         tagged_issues=[]
         ''' looks for
             issue["fields"]["summary"],
@@ -83,3 +83,8 @@ class TokenClassifier:
             if PII_attachment:
                 PII_attachments.append({"filename":f"{attachment['filename']}",'PII_leak':True,"Leaks":PII_attachment})
         return PII_attachments
+    
+
+    '''
+    The only thing specific to Jira in the output is that the leaks are aggregated into categories
+    '''
