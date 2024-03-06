@@ -20,8 +20,8 @@ class JiraFetcher:
         "Accept": "application/json"
         }
 
-    def get_last_week_issue(self,project_key:str):
-        seven_days_ago = datetime.now() - timedelta(days=14)
+    def get_issue_by_date(self,project_key:str,last_n_days=7):
+        seven_days_ago = datetime.now() - timedelta(days=last_n_days)
         seven_days_ago_str = seven_days_ago.strftime("%Y-%m-%d")
         jql_query = f"project={project_key} AND created>='{seven_days_ago_str}'"
         api_route = f"{self.__baseURL}/rest/api/2/search?jql={jql_query}&fields=id&maxResults=100"
