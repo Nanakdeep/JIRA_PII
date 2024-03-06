@@ -1,5 +1,6 @@
 import requests
 from requests.auth import HTTPBasicAuth
+from datetime import datetime, timedelta
 import json
 import os
 from utils.io import FileProcessor
@@ -19,9 +20,28 @@ class JiraFetcher:
         "Accept": "application/json"
         }
 
+    def get_last_week_issue(self,project_key:str):
+        seven_days_ago = datetime.now() - timedelta(days=14)
+        seven_days_ago_str = seven_days_ago.strftime("%Y-%m-%d")
+        jql_query = f"project={project_key} AND created>='{seven_days_ago_str}'"
+        api_route = f"{self.__baseURL}/rest/api/2/search?jql={jql_query}&fields=id&maxResults=100"
+        response = requests.request(
+        "GET",
+        api_route,
+        headers=self.__headers,
+        auth=self.__auth
+        )
+        out=json.loads(response.text)
+        issueIds=out["issues"]
+        issues_data=[]
+        for issue in issueIds:
+            issues_data.append(self.fetch_issue(issue['id']))
+        return issues_data
+    
+
     def get_issues(self,project_key:str):
         url = f"{self.__baseURL}/rest/api/2/search?jql=project={project_key}&fields=id&maxResults=100"
-
+        print(url, self.__baseURL)
         response = requests.request(
         "GET",
         url,
