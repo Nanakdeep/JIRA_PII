@@ -11,12 +11,16 @@ Clone the repo
 `pip install -r requirements`
 
 To test out the code:
-Create an env file in the root folder with these as the variables
+Please run these commands with appropriate values to set the env variables
 
-`jiraToken="your_Jira_token"`
-`adminId="Your admin id"`
-`baseURL='The base url for the jira'`
-`ProjectKey='The project key for your jira project'`
+`echo "jiraToken=\"your_Jira_token\"" >> .env`
+
+`echo "adminId=\"Your admin id\"" >> .env`
+
+`echo "baseURL='The base url for the jira'" >> .env`
+
+`echo "ProjectKey='The project key for your jira project'" >> .env`
+
 
 Then simply run 
 `python test.py`
