@@ -20,7 +20,7 @@ class JiraFetcher:
         "Accept": "application/json"
         }
 
-    def get_issue_by_date(self,project_key:str,last_n_days=7):
+    def get_issue_by_date(self,project_key:str,last_n_days=2):
         seven_days_ago = datetime.now() - timedelta(days=last_n_days)
         seven_days_ago_str = seven_days_ago.strftime("%Y-%m-%d")
         jql_query = f"project={project_key} AND created>='{seven_days_ago_str}'"
