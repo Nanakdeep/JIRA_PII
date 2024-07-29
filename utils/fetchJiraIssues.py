@@ -12,7 +12,7 @@ load_dotenv()
 class JiraFetcher:
     def __init__(self):
         #env fetch
-        self.__token=os.environ['jiraToken']
+        self.__token=os.environ['token']
         self.__adminId=os.environ['adminId']
         self.__baseURL=os.environ['baseURL']
         self.__auth = HTTPBasicAuth(self.__adminId, self.__token)
@@ -38,15 +38,21 @@ class JiraFetcher:
             issues_data.append(self.fetch_issue(issue['id']))
         return issues_data
     
-
-    def get_issues(self,project_key:str):
-        url = f"{self.__baseURL}/rest/api/2/search?jql=project={project_key}&fields=id&maxResults=100"
+    def get_issues(self,project_key:str,start_at,max_results):
+        url = f"{self.__baseURL}/rest/api/2/search"
         print(url, self.__baseURL)
+        query = {
+        'jql': f'project={project_key}',
+        'startAt': start_at,
+        'maxResults': max_results,
+        'fields': 'id'  # Customize fields as needed
+    }
         response = requests.request(
         "GET",
         url,
         headers=self.__headers,
-        auth=self.__auth
+        auth=self.__auth,
+        params=query
         )
         out=json.loads(response.text)
         issueIds=out["issues"]
@@ -94,3 +100,38 @@ class JiraFetcher:
         out=obj.process_files()
         out=out.split(sep=',')
         return out[-2]
+    
+    def fetch_all_issues(self,key):
+        start_at = 0
+        max_results = 100
+        all_issues = []
+
+        while True:
+            data = self.get_issues(key,max_results=max_results,start_at=start_at)
+            all_issues.extend(data)
+
+            if len(data) < max_results:
+                break
+            start_at += max_results
+        return all_issues
+    
+    def addPIILabel(self,issueIdOrKey):
+        url = f"{self.__baseURL}/rest/api/3/issue/{issueIdOrKey}"
+
+        headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+        }
+
+        payload = json.dumps({"update":{"labels":[{"add":"PII_detected"}]}})
+
+        response = requests.request(
+        "PUT",
+        url,
+        data=payload,
+        headers=headers,
+        auth=self.__auth
+        )
+
+        print(response.content)
+        return

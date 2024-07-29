@@ -68,7 +68,8 @@ class TokenClassifier:
             comment_string=""
             for j in comment_data:
                 for k in j["content"]:
-                    comment_string+=k['text']
+                    if "text" in k:
+                        comment_string+=k['text']
             PII_comment=self.gen(comment_string, aggregation_strategy="first")
             if PII_comment:
                 PII_comments.append({"id":f"{issue['id']}/{comment['id']}",'PII_leak':True,"Leaks":PII_comment})
